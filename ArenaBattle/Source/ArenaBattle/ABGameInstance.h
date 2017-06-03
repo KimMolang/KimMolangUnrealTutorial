@@ -13,7 +13,10 @@ class ARENABATTLE_API UABGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
-	
-	
-	
+public :
+	UABGameInstance();
+	virtual void Init() override;
+
+	UPROPERTY()
+	class UWebConnection*	m_pWebConnection;
 };

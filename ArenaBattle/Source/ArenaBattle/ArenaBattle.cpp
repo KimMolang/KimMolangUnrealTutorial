@@ -3,6 +3,8 @@
 #include "ArenaBattle.h"
 
 
+DEFINE_LOG_CATEGORY(ArenaBattle);
+
 // 지금까지 우리가 제작한 ArenaBattle이라는 게임 프로젝트는
 // ArenaBattle이라는 동일한 이름의 C++ 모듈이 추가된 형태입니다.
 // 이렇게 언리얼 엔진의 C++ 개발 환경은 하나의 게임 프로젝트에
