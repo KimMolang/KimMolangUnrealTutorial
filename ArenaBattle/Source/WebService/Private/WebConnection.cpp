@@ -8,7 +8,7 @@ DEFINE_LOG_CATEGORY(WebConnection);
 
 UWebConnection::UWebConnection()
 {
-	UE_LOG(LogClass, Warning, TEXT("%s"), TEXT("WebConnection Constructor Call!"));
+	UE_LOG(LogClass, Log, TEXT("%s"), TEXT("WebConnection Constructor Call!"));
 
 	m_fstrHost	= TEXT("localhost:8000");
 	m_fstrUrl	= TEXT("/");
@@ -16,5 +16,5 @@ UWebConnection::UWebConnection()
 
 void UWebConnection::RequestToken()
 {
-	UE_LOG(WebConnection, Warning, TEXT("Request Token Call!"));
+	UE_LOG(WebConnection, Log, TEXT("Request Token Call!"));
 }

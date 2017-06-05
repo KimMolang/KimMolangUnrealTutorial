@@ -19,4 +19,9 @@ public :
 
 	UPROPERTY()
 	class UWebConnection*	m_pWebConnection;
+
+
+private :
+	void		FindPropertyAndFunction();
+	void		FindObject();
 };
