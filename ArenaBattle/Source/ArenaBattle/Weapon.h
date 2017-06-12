@@ -2,8 +2,11 @@
 
 #pragma once
 
+class USkeletalMeshComponent;
+
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
+
 
 UCLASS()
 class ARENABATTLE_API AWeapon : public AActor
@@ -20,7 +23,16 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-	
-	UPROPERTY()
-	class USkeletalMeshComponent*	m_pWeapon;
+
+public :
+	UFUNCTION(BlueprintCallable, Category="Weapon|Stat")
+	USkeletalMeshComponent* GetWeapon()	{ return m_pWeapon; }
+
+
+public :
+	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category = "DAMAGE")
+		float	DAMAGE_BASE;
+private :
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta=(AllowPrivateAccess="true"))
+	USkeletalMeshComponent*	m_pWeapon;
 };
