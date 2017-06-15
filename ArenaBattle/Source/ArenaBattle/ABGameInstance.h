@@ -15,11 +15,16 @@ class ARENABATTLE_API UABGameInstance : public UGameInstance
 	
 public :
 	UABGameInstance();
+	~UABGameInstance();
+
 	virtual void Init() override;
 
 	UPROPERTY()
 	class UWebConnection*	m_pWebConnection;
 
+	UPROPERTY()
+	//FStreamableManager*		m_pAssetLoader;
+	FStreamableManager		m_tAssetLoader;
 
 private :
 	void		FindPropertyAndFunction();

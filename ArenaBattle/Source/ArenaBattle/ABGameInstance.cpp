@@ -17,8 +17,17 @@ UABGameInstance::UABGameInstance()
 	// 생성자 아닌 곳에서는 NewObject 하면 됌!
 	// 인자로 텍스트 넣는 건 서브오브젝트를 관리하기 위한 내부 해시값임
 
+
+	//m_pAssetLoader = new FStreamableManager;
+
+
 	//UE_LOG(LogClass, Warning, TEXT("%s"), TEXT("Game Instance Constructor Call End!"));
 	AB_LOG(Log, TEXT("Game Instance Constructor Call End!"));
+}
+
+UABGameInstance::~UABGameInstance()
+{
+	//delete m_pAssetLoader;
 }
 
 void UABGameInstance::Init()
