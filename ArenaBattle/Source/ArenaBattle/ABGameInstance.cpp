@@ -4,6 +4,8 @@
 #include "ABGameInstance.h"
 
 #include "WebConnection.h"
+//#include <iostrem>
+#include <memory>
 
 
 UABGameInstance::UABGameInstance()
@@ -39,6 +41,14 @@ void UABGameInstance::Init()
 	// [Assertion 매크로] https://docs.unrealengine.com/latest/INT/Programming/Assertions/
 	AB_LOG_CALLONLY(Log);
 
+
+	//m_pWebConnection->m_tTokenCompleteDelegate.BindUObject(this, &UABGameInstance::RequestTokenComplete);
+	m_pWebConnection->m_tTokenCompleteDelegate.AddDynamic(this, &UABGameInstance::RequestTokenComplete);
+	// 델리게이트에게 함수를 등록해 준다.
+	m_pWebConnection->RequestToken(TEXT("destiny")); // 아이디 전달
+
+
+	HowToUseTheSerialization();
 }
 
 void UABGameInstance::FindPropertyAndFunction()
@@ -82,6 +92,11 @@ void UABGameInstance::FindPropertyAndFunction()
 			m_pWebConnection->ProcessEvent(pFunc, NULL);
 		}
 	}
+}
+
+void UABGameInstance::RequestTokenComplete(const FString& _rToken)
+{
+	AB_LOG(Warning, TEXT("Token : %s"), *_rToken);
 }
 
 void UABGameInstance::FindObject()
@@ -135,4 +150,82 @@ void UABGameInstance::FindObject()
 	}
 
 	DeleteObject(pWebConnection_NewObject);
+}
+
+void UABGameInstance::HowToUseTheFArchive()
+{
+	// WebConnection.txt 에 저장
+	//std::unique_ptr<UWebConnection> pTmpWebConnection = NewObject<UWebConnection>(this);
+	//TUniquePtr<UWebConnection> pTmpWebConnection = NewObject<UWebConnection>(this);
+	UWebConnection* pTmpWebConnection = NewObject<UWebConnection>(this);
+	pTmpWebConnection->m_fstrHost = TEXT("127.0.0.7");
+	pTmpWebConnection->m_fstrUrl = TEXT("/");
+
+	// FPaths::GameSavedDir() 프로젝트명\Saved 경로
+	FString fstrFullPath = FString::Printf(TEXT("%s%s"), *FPaths::GameSavedDir(), TEXT("WebConnection.txt"));
+	FArchive* pArWriter = IFileManager::Get().CreateFileWriter(*fstrFullPath);
+
+	if (pArWriter == nullptr)
+		return;
+
+
+	//*pArWriter << pTmpWebConnection->m_fstrHost;
+	//*pArWriter << pTmpWebConnection->m_fstrUrl;
+	*pArWriter << *pTmpWebConnection;
+	pArWriter->Close();
+	//pTmpWebConnection.reset();
+	delete pTmpWebConnection;
+	pTmpWebConnection = nullptr;
+
+
+	// WebConnection.txt 에서 값 가져오기
+	TSharedPtr<FArchive> pFileReader = MakeShareable(IFileManager::Get().CreateFileReader(*fstrFullPath));
+
+	if (!(pFileReader.IsValid()))
+		return;
+
+	//FString fstrHost;
+	//FString fstrURI;
+	pTmpWebConnection = NewObject<UWebConnection>(this);
+	//*pFileReader.Get() << fstrHost;
+	//*pFileReader.Get() << fstrURI;
+	*pFileReader.Get() << *pTmpWebConnection;
+	// 오잉?? << 연산자네?? >> 이거 안 쓰넹
+	pFileReader->Close();
+	//AB_LOG(Warning, TEXT("WebConnection : Host %s , URI %s"), *fstrHost, *fstrURI);
+	AB_LOG(Warning, TEXT("WebConnection : Host %s , URI %s"), *pTmpWebConnection->m_fstrHost, *pTmpWebConnection->m_fstrUrl);
+	// 와우 널값 포인터 참조하면 에디터가 강제로 꺼짐!!!! 알 수 없는 오류입니다. 리포트를 보내시겠습니까? ..가 나오다니 충격이얌
+
+	delete pTmpWebConnection;
+	pTmpWebConnection = nullptr;
+}
+
+void UABGameInstance::HowToUseTheSerialization()
+{
+	// file extension : 파일 확장자
+	FString		fstrPackageName		= TEXT("/Temp/SavedWebConnection");
+	UPackage*	pPackage			= CreatePackage(nullptr, *fstrPackageName);
+	FString		fstrPackageFileName
+		= FPackageName::LongPackageNameToFilename(fstrPackageName, FPackageName::GetAssetPackageExtension());
+
+	UWebConnection* pTmpWebConnection = NewObject<UWebConnection>(pPackage);
+	pTmpWebConnection->m_fstrHost = TEXT("127.0.0.7");
+	pTmpWebConnection->m_fstrUrl = TEXT("/");
+
+	if (UPackage::SavePackage(pPackage, pTmpWebConnection, RF_Standalone, *fstrPackageFileName))
+	{
+		UPackage* pSavedPackage = ::LoadPackage(nullptr, *fstrPackageFileName, LOAD_None);
+		TArray<UObject *> arrObjectsInPackage;
+		GetObjectsWithOuter(pSavedPackage, arrObjectsInPackage, false);
+
+		for (const auto& EachObject : arrObjectsInPackage)
+		{
+			UWebConnection* WebConnectionFromFile = Cast<UWebConnection>(EachObject);
+			if (WebConnectionFromFile)
+			{
+				AB_LOG(Warning, TEXT("WebConnection From File : Host %s , URI %s")
+					, *WebConnectionFromFile->m_fstrHost, *WebConnectionFromFile->m_fstrUrl);
+			}
+		}
+	}
 }

@@ -39,14 +39,36 @@ public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
 	class UCameraComponent*			m_pCamera;
 
+public: // about move
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Movement")
+		class UFloatingPawnMovement*	m_pMovement;
+
+public : // about HP
 	UPROPERTY(config, BlueprintReadWrite, EditDefaultsOnly, Category = "Stat")
 	float		MAX_HP;
 
 	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category = "Stat")
 	float		m_fCurrentHP;
 
+public:	// Delegate
+	UFUNCTION()
+	void CharacterMeshDeferred();
+	//FStreamableDelegate StreamableDelegate;
 
 private :
+	int32	m_iCharMeshType;
+
+
+private :	// about resource Mesh
 	UPROPERTY(config)
 	TArray<FStringAssetReference>	m_arrCharacterAssets;	
+
+private : // about move
+	float		m_fCurLeftRightVal;
+	float		m_fCurUpDownVal;
+
+	UFUNCTION()
+	void		SetCurLeftRifgtVal(const float _fVal)	{ m_fCurLeftRightVal	= _fVal; }
+	UFUNCTION()
+	void		SetCurUpDownVal(const float _fVal)		{ m_fCurUpDownVal		= _fVal; }
 };

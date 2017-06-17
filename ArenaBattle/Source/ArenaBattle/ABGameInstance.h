@@ -19,14 +19,21 @@ public :
 
 	virtual void Init() override;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="WebService")
 	class UWebConnection*	m_pWebConnection;
 
 	UPROPERTY()
 	//FStreamableManager*		m_pAssetLoader;
 	FStreamableManager		m_tAssetLoader;
 
+	UFUNCTION()
+	void RequestTokenComplete(const FString& _rToken);
+
 private :
 	void		FindPropertyAndFunction();
 	void		FindObject();
+
+private :
+	void		HowToUseTheFArchive();
+	void		HowToUseTheSerialization();
 };

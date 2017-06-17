@@ -14,7 +14,12 @@ UWebConnection::UWebConnection()
 	m_fstrUrl	= TEXT("/");
 }
 
-void UWebConnection::RequestToken()
+void UWebConnection::RequestToken(const FString& _rUserID)
 {
 	UE_LOG(WebConnection, Log, TEXT("Request Token Call!"));
+	//m_tTokenCompleteDelegate.ExecuteIfBound(TEXT(
+	//	"0LCJydGkiOiI2a3NjVE9pTUNESVZWM05qVTIyUnlTIn0.VJyMOicM"));
+	m_tTokenCompleteDelegate.Broadcast(TEXT(
+		"0LCJydGkiOiI2a3NjVE9pTUNESVZWM05qVTIyUnlTIn0.VJyMOicM"));
+	// 델리게이트에 등록되어 있는 함수를 콜하며 파라메타를 넘겨준다.
 }
